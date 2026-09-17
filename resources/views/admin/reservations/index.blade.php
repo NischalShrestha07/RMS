@@ -5,14 +5,17 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
    <h5 class="mb-0" style="font-weight:700;">Reservations</h5>
-   <form method="GET" class="d-flex gap-2">
-      <select name="status" class="form-control fctrl" onchange="this.form.submit()">
-         <option value="">All Statuses</option>
-         @foreach (['pending', 'confirmed', 'cancelled'] as $status)
-         <option value="{{ $status }}" {{ $statusFilter === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
-         @endforeach
-      </select>
-   </form>
+   <div class="d-flex align-items-center gap-2">
+      <a href="{{ route('admin.reservations.calendar') }}" class="btn btn-sm btn-outline-secondary">Calendar View</a>
+      <form method="GET" class="d-flex gap-2">
+         <select name="status" class="form-control fctrl" onchange="this.form.submit()">
+            <option value="">All Statuses</option>
+            @foreach (['pending', 'confirmed', 'cancelled'] as $status)
+            <option value="{{ $status }}" {{ $statusFilter === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+            @endforeach
+         </select>
+      </form>
+   </div>
 </div>
 
 <div class="admin-card">

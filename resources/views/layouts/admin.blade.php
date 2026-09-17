@@ -92,6 +92,10 @@
             'Operations' => [
                ['label' => 'Orders', 'route' => 'admin.orders.index'],
                ['label' => 'Reservations', 'route' => 'admin.reservations.index'],
+               ['label' => 'Coupons', 'route' => 'admin.coupons.index'],
+               ['label' => 'Reports', 'route' => 'admin.reports.index'],
+               ['label' => 'Reviews', 'route' => 'admin.reviews.index'],
+               ['label' => 'Activity Log', 'route' => 'admin.activity-logs.index'],
                ['label' => 'Messages', 'route' => 'admin.contact-messages.index'],
                ['label' => 'Newsletter', 'route' => 'admin.newsletter-subscribers.index'],
                ['label' => 'Users', 'route' => 'admin.users.index'],
@@ -123,6 +127,37 @@
                </div>
                <div class="d-flex align-items-center gap-3">
                   <span style="font-size:.88rem;color:#666;">{{ auth()->user()->name }}</span>
+                  @php $adminAlertsTotal = $adminAlerts['unreadMessages']['count'] + $adminAlerts['pendingReservations']['count'] + $adminAlerts['pendingOrders']['count']; @endphp
+                  <div class="dropdown">
+                     <button type="button" class="btn btn-sm btn-outline-secondary position-relative" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Alerts">
+                        <i class="fas fa-bell"></i>
+                        @if($adminAlertsTotal > 0)
+                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem;">{{ $adminAlertsTotal }}</span>
+                        @endif
+                     </button>
+                     <ul class="dropdown-menu dropdown-menu-end" style="min-width:280px;font-size:.85rem;">
+                        <li><h6 class="dropdown-header" style="color:var(--primary);">Unread Messages ({{ $adminAlerts['unreadMessages']['count'] }})</h6></li>
+                        @forelse($adminAlerts['unreadMessages']['items'] as $message)
+                           <li><a class="dropdown-item text-truncate" href="{{ route('admin.contact-messages.index') }}">{{ $message->name }} — {{ $message->subject }}</a></li>
+                        @empty
+                           <li><span class="dropdown-item-text text-muted">No unread messages</span></li>
+                        @endforelse
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header" style="color:var(--primary);">Pending Reservations ({{ $adminAlerts['pendingReservations']['count'] }})</h6></li>
+                        @forelse($adminAlerts['pendingReservations']['items'] as $reservation)
+                           <li><a class="dropdown-item text-truncate" href="{{ route('admin.reservations.index', ['status' => 'pending']) }}">{{ $reservation->name }} — {{ $reservation->date }}</a></li>
+                        @empty
+                           <li><span class="dropdown-item-text text-muted">No pending reservations</span></li>
+                        @endforelse
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header" style="color:var(--primary);">Pending Orders ({{ $adminAlerts['pendingOrders']['count'] }})</h6></li>
+                        @forelse($adminAlerts['pendingOrders']['items'] as $order)
+                           <li><a class="dropdown-item text-truncate" href="{{ route('admin.orders.index', ['status' => 'pending']) }}">#{{ $order->order_number }} — {{ number_format($order->total, 2) }}</a></li>
+                        @empty
+                           <li><span class="dropdown-item-text text-muted">No pending orders</span></li>
+                        @endforelse
+                     </ul>
+                  </div>
                   <a href="{{ route('home') }}" target="_blank" style="font-size:.85rem;color:var(--primary);text-decoration:none;"><i class="fas fa-external-link-alt me-1"></i>View Site</a>
                   <form method="POST" action="{{ route('logout') }}">
                      @csrf

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
+use App\Models\Coupon;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -30,19 +31,33 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('status', 'Your cart is empty.');
         }
 
-        $order = DB::transaction(function () use ($request, $cart) {
-            $subtotal = $cart->subtotal();
+        $subtotal = $cart->subtotal();
+        $coupon = null;
+        $discount = 0;
 
+        if ($request->filled('coupon_code')) {
+            $coupon = Coupon::where('code', $request->coupon_code)->first();
+
+            if (! $coupon || ! $coupon->isValid()) {
+                return redirect()->back()->withErrors(['coupon_code' => 'Invalid or expired coupon code.'])->withInput();
+            }
+
+            $discount = $coupon->calculateDiscount($subtotal);
+        }
+
+        $order = DB::transaction(function () use ($request, $cart, $subtotal, $coupon, $discount) {
             $order = Order::create([
                 'user_id' => $request->user()->id,
                 'order_number' => $this->generateOrderNumber(),
                 'subtotal' => $subtotal,
-                'total' => $subtotal,
+                'total' => $subtotal - $discount,
                 'status' => 'pending',
                 'payment_method' => 'cod',
                 'delivery_address' => $request->delivery_address,
                 'phone' => $request->phone,
                 'notes' => $request->notes,
+                'coupon_code' => $coupon?->code,
+                'discount' => $discount,
             ]);
 
             foreach ($cart->items as $item) {
@@ -56,6 +71,10 @@ class CheckoutController extends Controller
             }
 
             $cart->items()->delete();
+
+            if ($coupon) {
+                $coupon->increment('used_count');
+            }
 
             return $order;
         });

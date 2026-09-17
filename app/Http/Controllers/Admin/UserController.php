@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
@@ -34,6 +35,8 @@ class UserController extends Controller
 
         $user->update(['name' => $data['name'], 'email' => $data['email']]);
         $user->syncRoles([$data['role']]);
+
+        ActivityLog::record('user.role_changed', $user, "{$user->name}'s role set to {$data['role']}");
 
         return redirect()->route('admin.users.index')->with('status', 'User updated.');
     }

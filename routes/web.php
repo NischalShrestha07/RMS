@@ -2,17 +2,22 @@
 
 use App\Http\Controllers\Account\DashboardController as AccountDashboardController;
 use App\Http\Controllers\Account\OrderController;
+use App\Http\Controllers\Account\ReviewController as AccountReviewController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BlogPostController as AdminBlogPostController;
 use App\Http\Controllers\Admin\BusinessHourController as AdminBusinessHourController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ChefController as AdminChefController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\CouponController as AdminCouponController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\GalleryItemController as AdminGalleryItemController;
 use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
 use App\Http\Controllers\Admin\NewsletterSubscriberController as AdminNewsletterSubscriberController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Admin\SpecialOfferController as AdminSpecialOfferController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
@@ -82,6 +87,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
 
     Route::get('reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
+    Route::get('reservations/calendar', [AdminReservationController::class, 'calendar'])->name('reservations.calendar');
+    Route::get('reservations/calendar-data', [AdminReservationController::class, 'calendarData'])->name('reservations.calendar-data');
     Route::put('reservations/{reservation}', [AdminReservationController::class, 'update'])->name('reservations.update');
 
     Route::get('contact-messages', [AdminContactMessageController::class, 'index'])->name('contact-messages.index');
@@ -95,6 +102,17 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
     Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
     Route::put('users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+
+    Route::resource('coupons', AdminCouponController::class);
+
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export', [ReportController::class, 'export'])->name('reports.export');
+
+    Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::put('reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
 
 Route::middleware(['auth', 'role:kitchen'])->prefix('kitchen')->name('kitchen.')->group(function () {
@@ -114,6 +132,7 @@ Route::middleware(['auth', 'role:customer'])->prefix('account')->name('account.'
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/reservations', [App\Http\Controllers\Account\ReservationController::class, 'index'])->name('reservations.index');
+    Route::post('/orders/{order}/review', [AccountReviewController::class, 'store'])->name('orders.review.store');
 });
 
 require __DIR__.'/auth.php';

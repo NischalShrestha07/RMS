@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Delivery;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Delivery;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -30,6 +31,8 @@ class OrderController extends Controller
         $delivery->update(['picked_up_at' => now()]);
         $order->update(['status' => 'out_for_delivery']);
 
+        ActivityLog::record('order.picked_up', $order, "Order {$order->order_number} picked up by rider");
+
         return back()->with('status', "Order {$order->order_number} marked out for delivery.");
     }
 
@@ -39,6 +42,8 @@ class OrderController extends Controller
 
         $delivery->update(['delivered_at' => now()]);
         $order->update(['status' => 'delivered']);
+
+        ActivityLog::record('order.delivered', $order, "Order {$order->order_number} delivered");
 
         return back()->with('status', "Order {$order->order_number} marked delivered.");
     }

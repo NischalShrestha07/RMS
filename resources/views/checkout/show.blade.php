@@ -29,6 +29,11 @@
                <label class="flbl">Special Requests</label>
                <textarea name="notes" rows="3" class="fctrl" placeholder="Delivery instructions, allergies...">{{ old('notes') }}</textarea>
             </div>
+            <div class="mb-4">
+               <label class="flbl">Coupon Code</label>
+               <input type="text" name="coupon_code" value="{{ old('coupon_code') }}" class="fctrl @error('coupon_code') is-invalid @enderror" placeholder="Enter coupon code">
+               @error('coupon_code') <small class="ferr">{{ $message }}</small> @enderror
+            </div>
             <div class="mb-4" style="background:rgba(45,106,79,.07);border-radius:10px;padding:14px 18px;font-size:.85rem;">
                <i class="fas fa-money-bill-wave me-2" style="color:var(--green);"></i>Payment: <strong>Cash on Delivery</strong>
             </div>

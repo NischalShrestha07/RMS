@@ -17,6 +17,7 @@ class StoreOrderRequest extends FormRequest
             'delivery_address' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'coupon_code' => ['nullable', 'string'],
         ];
     }
 }

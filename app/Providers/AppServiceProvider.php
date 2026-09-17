@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Http\Controllers\CartController;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\ContactMessage;
+use App\Models\Order;
+use App\Models\Reservation;
 use App\Models\SiteSetting;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Pagination\Paginator;
@@ -61,5 +64,22 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('allCategories', $view->getData()['allCategories'] ?? Category::orderBy('sort_order')->get());
             }
         );
+
+        View::composer('layouts.admin', function ($view) {
+            $view->with('adminAlerts', [
+                'unreadMessages' => [
+                    'count' => ContactMessage::where('is_read', false)->count(),
+                    'items' => ContactMessage::where('is_read', false)->latest()->take(5)->get(),
+                ],
+                'pendingReservations' => [
+                    'count' => Reservation::where('status', 'pending')->count(),
+                    'items' => Reservation::where('status', 'pending')->latest()->take(5)->get(),
+                ],
+                'pendingOrders' => [
+                    'count' => Order::where('status', 'pending')->count(),
+                    'items' => Order::where('status', 'pending')->latest()->take(5)->get(),
+                ],
+            ]);
+        });
     }
 }

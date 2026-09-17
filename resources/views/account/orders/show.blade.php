@@ -38,6 +38,43 @@
    </div>
 </div>
 
+@if ($order->status === 'delivered')
+<div class="fcard mt-4">
+   @if ($review)
+   <h6 style="font-weight:700;">Your Review</h6>
+   <div style="font-size:.9rem;">Your rating: {{ $review->rating }}/5</div>
+   @if ($review->comment)
+   <div style="font-size:.9rem;color:#666;margin-top:4px;">{{ $review->comment }}</div>
+   @endif
+   @unless ($review->is_approved)
+   <div style="font-size:.8rem;color:#888;margin-top:8px;"><i class="fas fa-clock me-1"></i>Pending approval</div>
+   @endunless
+   @else
+   <h6 style="font-weight:700;">Leave a Review</h6>
+   @if ($errors->any())
+   <div class="alert alert-danger">{{ $errors->first() }}</div>
+   @endif
+   <form method="POST" action="{{ route('account.orders.review.store', $order) }}">
+      @csrf
+      <div class="mb-3">
+         <label class="flbl">Rating *</label>
+         <select name="rating" class="fctrl" required>
+            <option value="">Select a rating</option>
+            @for ($i = 5; $i >= 1; $i--)
+            <option value="{{ $i }}" {{ old('rating') == $i ? 'selected' : '' }}>{{ $i }} / 5</option>
+            @endfor
+         </select>
+      </div>
+      <div class="mb-3">
+         <label class="flbl">Comment</label>
+         <textarea name="comment" rows="3" class="fctrl" placeholder="Tell us about your order...">{{ old('comment') }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+   </form>
+   @endif
+</div>
+@endif
+
 <div class="d-flex flex-wrap gap-3 mt-4">
    <a href="{{ route('account.orders.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Orders</a>
    @include('partials.whatsapp-order-button', ['order' => $order])

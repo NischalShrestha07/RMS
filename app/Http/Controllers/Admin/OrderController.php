@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,8 @@ class OrderController extends Controller
         $request->validate(['status' => ['required', 'in:'.implode(',', Order::STATUSES)]]);
 
         $order->update(['status' => $request->status]);
+
+        ActivityLog::record('order.status_updated', $order, "Order {$order->order_number} status set to {$order->status}");
 
         return back()->with('status', 'Order status updated.');
     }
