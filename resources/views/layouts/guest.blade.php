@@ -12,7 +12,7 @@
       <style>
          body.authbody { background: var(--dark, #1b1b1f); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
          .authbox { width: 100%; max-width: 440px; }
-         .authbox .fcard { padding: 40px; }
+         .authbox .fcard { padding: 40px; position: static; display: block; }
       </style>
    </head>
    <body class="authbody">

@@ -2,13 +2,29 @@
 
 use App\Http\Controllers\Account\DashboardController as AccountDashboardController;
 use App\Http\Controllers\Account\OrderController;
+use App\Http\Controllers\Admin\BlogPostController as AdminBlogPostController;
+use App\Http\Controllers\Admin\BusinessHourController as AdminBusinessHourController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ChefController as AdminChefController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\GalleryItemController as AdminGalleryItemController;
+use App\Http\Controllers\Admin\MenuItemController as AdminMenuItemController;
+use App\Http\Controllers\Admin\NewsletterSubscriberController as AdminNewsletterSubscriberController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
+use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
+use App\Http\Controllers\Admin\SpecialOfferController as AdminSpecialOfferController;
+use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\Delivery\DashboardController as DeliveryDashboardController;
+use App\Http\Controllers\Delivery\OrderController as DeliveryOrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kitchen\DashboardController as KitchenDashboardController;
+use App\Http\Controllers\Kitchen\OrderController as KitchenOrderController;
 use App\Http\Controllers\NewsletterSubscriberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
@@ -50,14 +66,47 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('categories', AdminCategoryController::class)->except('show');
+    Route::resource('menu-items', AdminMenuItemController::class)->except('show');
+    Route::resource('chefs', AdminChefController::class)->except('show');
+    Route::resource('gallery-items', AdminGalleryItemController::class)->except('show');
+    Route::resource('testimonials', AdminTestimonialController::class)->except('show');
+    Route::resource('blog-posts', AdminBlogPostController::class)->except('show');
+    Route::resource('special-offers', AdminSpecialOfferController::class)->except('show');
+    Route::resource('business-hours', AdminBusinessHourController::class)->except('show');
+    Route::get('site-settings', [AdminSiteSettingController::class, 'index'])->name('site-settings.index');
+    Route::put('site-settings', [AdminSiteSettingController::class, 'update'])->name('site-settings.update');
+
+    Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::put('orders/{order}', [AdminOrderController::class, 'update'])->name('orders.update');
+
+    Route::get('reservations', [AdminReservationController::class, 'index'])->name('reservations.index');
+    Route::put('reservations/{reservation}', [AdminReservationController::class, 'update'])->name('reservations.update');
+
+    Route::get('contact-messages', [AdminContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::get('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'show'])->name('contact-messages.show');
+    Route::delete('contact-messages/{contactMessage}', [AdminContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
+
+    Route::get('newsletter-subscribers', [AdminNewsletterSubscriberController::class, 'index'])->name('newsletter-subscribers.index');
+    Route::get('newsletter-subscribers/export', [AdminNewsletterSubscriberController::class, 'export'])->name('newsletter-subscribers.export');
+    Route::delete('newsletter-subscribers/{newsletterSubscriber}', [AdminNewsletterSubscriberController::class, 'destroy'])->name('newsletter-subscribers.destroy');
+
+    Route::get('users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [AdminUserController::class, 'update'])->name('users.update');
 });
 
 Route::middleware(['auth', 'role:kitchen'])->prefix('kitchen')->name('kitchen.')->group(function () {
     Route::get('/', [KitchenDashboardController::class, 'index'])->name('dashboard');
+    Route::put('orders/{order}/advance', [KitchenOrderController::class, 'advance'])->name('orders.advance');
 });
 
 Route::middleware(['auth', 'role:rider'])->prefix('delivery')->name('delivery.')->group(function () {
     Route::get('/', [DeliveryDashboardController::class, 'index'])->name('dashboard');
+    Route::post('orders/{order}/assign', [DeliveryOrderController::class, 'assign'])->name('orders.assign');
+    Route::put('orders/{order}/pickup', [DeliveryOrderController::class, 'pickup'])->name('orders.pickup');
+    Route::put('orders/{order}/deliver', [DeliveryOrderController::class, 'deliver'])->name('orders.deliver');
 });
 
 Route::middleware(['auth', 'role:customer'])->prefix('account')->name('account.')->group(function () {

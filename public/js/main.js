@@ -273,11 +273,20 @@ document.getElementById('mpAddCart').addEventListener('click', function() {
         },
         body: JSON.stringify({ menu_item_id: mpItemId, quantity: mpQty })
     }).then(function(res) {
-        return res.json();
-    }).then(function(body) {
+        return res.json().then(function(body) { return { ok: res.ok, body: body }; });
+    }).then(function(result) {
+        if (!result.ok) {
+            self.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Failed, try again';
+            self.style.background = '#dc3545';
+            setTimeout(function() {
+                self.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+                self.style.background = '';
+            }, 1800);
+            return;
+        }
         var countEl = document.getElementById('cartCount');
-        if (countEl && typeof body.cart_count !== 'undefined') {
-            countEl.textContent = body.cart_count;
+        if (countEl && typeof result.body.cart_count !== 'undefined') {
+            countEl.textContent = result.body.cart_count;
         }
         self.innerHTML = '<i class="fas fa-check"></i> Added to Cart!';
         self.style.background = 'linear-gradient(135deg,var(--green),#1a4a35)';
@@ -286,6 +295,13 @@ document.getElementById('mpAddCart').addEventListener('click', function() {
             self.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
             self.style.background = '';
         }, 1000);
+    }).catch(function() {
+        self.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Network error';
+        self.style.background = '#dc3545';
+        setTimeout(function() {
+            self.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+            self.style.background = '';
+        }, 1800);
     });
 });
 

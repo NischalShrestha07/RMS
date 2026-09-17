@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Reservation;
+use Illuminate\Http\Request;
+
+class ReservationController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Reservation::query()->latest('date');
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        return view('admin.reservations.index', [
+            'reservations' => $query->paginate(20)->withQueryString(),
+            'statusFilter' => $request->string('status')->toString(),
+        ]);
+    }
+
+    public function update(Request $request, Reservation $reservation)
+    {
+        $request->validate(['status' => ['required', 'in:pending,confirmed,cancelled']]);
+
+        $reservation->update(['status' => $request->status]);
+
+        return back()->with('status', 'Reservation updated.');
+    }
+}

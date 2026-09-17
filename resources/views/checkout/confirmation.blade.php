@@ -10,6 +10,7 @@
    </div>
 
    <div class="fcard text-start mt-4">
+      @include('partials.order-status-tracker', ['order' => $order])
       <h5 class="mb-3" style="font-family:'Poppins',sans-serif;font-weight:700;">Order #{{ $order->order_number }}</h5>
       @foreach ($order->items as $item)
       <div class="d-flex justify-content-between mb-2" style="font-size:.88rem;">
@@ -26,6 +27,9 @@
       </div>
    </div>
 
-   <a href="{{ route('account.orders.index') }}" class="btn-red mt-4"><i class="fas fa-receipt"></i>View My Orders</a>
+   <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+      <a href="{{ route('account.orders.index') }}" class="btn-red"><i class="fas fa-receipt"></i>View My Orders</a>
+      @include('partials.whatsapp-order-button', ['order' => $order])
+   </div>
 </div>
 @endsection

@@ -61,7 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': token },
                 body: JSON.stringify({ quantity: this.value })
-            }).then(function() { location.reload(); });
+            }).then(function(res) {
+                if (!res.ok) { alert('Could not update quantity. Please try again.'); return; }
+                location.reload();
+            }).catch(function() { alert('Network error. Please try again.'); });
         });
     });
 
@@ -70,7 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch('cart/' + this.getAttribute('data-id'), {
                 method: 'DELETE',
                 headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': token }
-            }).then(function() { location.reload(); });
+            }).then(function(res) {
+                if (!res.ok) { alert('Could not remove item. Please try again.'); return; }
+                location.reload();
+            }).catch(function() { alert('Network error. Please try again.'); });
         });
     });
 });

@@ -45,6 +45,30 @@
          }
          .widget-value { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2rem; color: var(--dark); }
          .widget-label { font-size: .82rem; color: #888; text-transform: uppercase; letter-spacing: .04em; }
+         .sidebar-toggle {
+            display: none; background: none; border: none; font-size: 1.3rem; color: var(--dark);
+            padding: 4px 8px; margin-right: 8px; cursor: pointer;
+         }
+         .sidebar-backdrop { display: none; }
+         @media (max-width: 900px) {
+            .admin-sidebar {
+               position: fixed; left: 0; top: 0; z-index: 1050; height: 100vh;
+               transform: translateX(-100%); transition: transform .25s ease; overflow-y: auto;
+            }
+            .admin-sidebar.open { transform: translateX(0); }
+            .sidebar-toggle { display: inline-flex; }
+            .sidebar-backdrop.open {
+               display: block; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1040;
+            }
+            .admin-topbar { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+            .admin-topbar > div:last-child { flex-wrap: wrap; gap: 10px !important; }
+            .admin-content { padding: 16px; }
+            .admin-content .d-flex.justify-content-between {
+               flex-direction: column; align-items: stretch !important; gap: 10px;
+            }
+            .admin-content .btn { width: 100%; justify-content: center; }
+            .table { display: block; overflow-x: auto; white-space: nowrap; }
+         }
       </style>
       @stack('styles')
    </head>
@@ -58,7 +82,7 @@
                ['label' => 'Categories', 'route' => 'admin.categories.index'],
                ['label' => 'Menu Items', 'route' => 'admin.menu-items.index'],
                ['label' => 'Chefs', 'route' => 'admin.chefs.index'],
-               ['label' => 'Gallery', 'route' => 'admin.gallery.index'],
+               ['label' => 'Gallery', 'route' => 'admin.gallery-items.index'],
                ['label' => 'Testimonials', 'route' => 'admin.testimonials.index'],
                ['label' => 'Blog Posts', 'route' => 'admin.blog-posts.index'],
                ['label' => 'Special Offers', 'route' => 'admin.special-offers.index'],
@@ -75,7 +99,8 @@
          ];
       @endphp
       <div class="admin-shell">
-         <aside class="admin-sidebar">
+         <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+         <aside class="admin-sidebar" id="adminSidebar">
             <div class="brand">Sarab<span>Admin</span></div>
             <nav class="admin-nav">
                @foreach ($adminNav as $section => $items)
@@ -92,7 +117,10 @@
          </aside>
          <div class="admin-main">
             <div class="admin-topbar">
-               <div style="font-weight:600;">@yield('title', 'Dashboard')</div>
+               <div class="d-flex align-items-center" style="font-weight:600;min-width:0;">
+                  <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+                  <span class="text-truncate">@yield('title', 'Dashboard')</span>
+               </div>
                <div class="d-flex align-items-center gap-3">
                   <span style="font-size:.88rem;color:#666;">{{ auth()->user()->name }}</span>
                   <a href="{{ route('home') }}" target="_blank" style="font-size:.85rem;color:var(--primary);text-decoration:none;"><i class="fas fa-external-link-alt me-1"></i>View Site</a>
@@ -112,6 +140,22 @@
       </div>
       <script src="js/jquery-3.7.1.min.js"></script>
       <script src="js/bootstrap.bundle.min.js"></script>
+      <script>
+         (function () {
+            var sidebar = document.getElementById('adminSidebar');
+            var backdrop = document.getElementById('sidebarBackdrop');
+            var toggle = document.getElementById('sidebarToggle');
+            function close() {
+               sidebar.classList.remove('open');
+               backdrop.classList.remove('open');
+            }
+            toggle.addEventListener('click', function () {
+               sidebar.classList.toggle('open');
+               backdrop.classList.toggle('open');
+            });
+            backdrop.addEventListener('click', close);
+         })();
+      </script>
       @stack('scripts')
    </body>
 </html>

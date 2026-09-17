@@ -17,6 +17,8 @@
       <span style="font-size:.8rem;text-transform:capitalize;background:rgba(232,40,26,.1);color:var(--primary);padding:4px 12px;border-radius:20px;">{{ str_replace('_', ' ', $order->status) }}</span>
    </div>
 
+   @include('partials.order-status-tracker', ['order' => $order])
+
    @foreach ($order->items as $item)
    <div class="d-flex justify-content-between mb-2" style="font-size:.9rem;">
       <span>{{ $item->quantity }} × {{ $item->title }}</span>
@@ -36,5 +38,8 @@
    </div>
 </div>
 
-<a href="{{ route('account.orders.index') }}" class="btn btn-outline-secondary mt-4"><i class="fas fa-arrow-left me-1"></i>Back to Orders</a>
+<div class="d-flex flex-wrap gap-3 mt-4">
+   <a href="{{ route('account.orders.index') }}" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i>Back to Orders</a>
+   @include('partials.whatsapp-order-button', ['order' => $order])
+</div>
 @endsection
