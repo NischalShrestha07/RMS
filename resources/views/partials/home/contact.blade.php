@@ -1,0 +1,68 @@
+<!-- ============================================================
+   FIX 6 – CONTACT FORM
+   ============================================================ -->
+<section id="contact-section">
+   <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+         <span class="slbl">Get In Touch</span>
+         <h2 class="stitle">Contact <span>Us</span></h2>
+         <div class="sline"></div>
+         <p class="sdesc mx-auto" style="max-width:480px;">Have a question, feedback, or want to plan a special event? We'd love to hear from you.</p>
+      </div>
+      <div class="row g-4">
+         <div class="col-lg-4" data-aos="fade-right">
+            <div class="ctdark">
+               <h4>Let's Talk</h4>
+               <p class="ctsub">We typically respond within 2 hours during business hours.</p>
+               <div class="ctitem">
+                  <div class="cticon"><i class="fas fa-map-marker-alt"></i></div>
+                  <div class="ctinfo"><strong>Address</strong><span>{{ $settings['address_full'] }}</span></div>
+               </div>
+               <div class="ctitem">
+                  <div class="cticon"><i class="fas fa-phone-alt"></i></div>
+                  <div class="ctinfo"><strong>Phone</strong><span>{{ $settings['phone'] }}</span></div>
+               </div>
+               <div class="ctitem">
+                  <div class="cticon"><i class="fas fa-envelope"></i></div>
+                  <div class="ctinfo"><strong>Email</strong><span>{{ $settings['email'] }}</span></div>
+               </div>
+               <div class="ctitem">
+                  <div class="cticon"><i class="fas fa-clock"></i></div>
+                  <div class="ctinfo"><strong>Working Hours</strong><span>Wed - Sun: 9 AM - 11 PM</span></div>
+               </div>
+               <div class="ctsocrow">
+                  <a href="{{ $settings['social_facebook'] }}"><i class="fab fa-facebook-f"></i></a>
+                  <a href="{{ $settings['social_instagram'] }}"><i class="fab fa-instagram"></i></a>
+                  <a href="{{ $settings['social_twitter'] }}"><i class="fab fa-twitter"></i></a>
+                  <a href="{{ $settings['social_youtube'] }}"><i class="fab fa-youtube"></i></a>
+               </div>
+            </div>
+         </div>
+         <div class="col-lg-8" data-aos="fade-left">
+            <div class="fcard">
+               <div class="row g-3">
+                  <div class="col-sm-6"><label class="flbl">Your Name *</label><input type="text" name="name" class="fctrl" placeholder="John Doe"/></div>
+                  <div class="col-sm-6"><label class="flbl">Email Address *</label><input type="email" name="email" class="fctrl" placeholder="you@email.com"/></div>
+                  <div class="col-sm-6"><label class="flbl">Phone Number</label><input type="tel" name="phone" class="fctrl" placeholder="+1 (800) 000-0000"/></div>
+                  <div class="col-sm-6">
+                     <label class="flbl">Subject *</label>
+                     <select class="fctrl" name="subject">
+                        <option>General Inquiry</option>
+                        <option>Catering &amp; Events</option>
+                        <option>Feedback</option>
+                        <option>Partnership</option>
+                        <option>Media &amp; Press</option>
+                     </select>
+                  </div>
+                  <div class="col-12"><label class="flbl">Message *</label><textarea name="message" class="fctrl" rows="5" placeholder="Write your message here..."></textarea></div>
+                  <div class="col-12"><button class="btn-red" id="ctcBtn"><i class="fas fa-paper-plane"></i>Send Message</button></div>
+               </div>
+               <div class="sucmsg" id="ctcOk">
+                  <i class="fas fa-check-circle"></i>
+                  <p>Message sent! We'll reply within 2 hours.</p>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
